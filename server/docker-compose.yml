@@ -1,0 +1,29 @@
+services:
+  # brevly_server:
+  #   container_name: brevly_server
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile
+  #   env_file:
+  #     - .env
+  #   ports:
+  #     - "4000:4000"
+  #   depends_on:
+  #     - brevly_server_db
+    # volumes:
+    #   - ./:/usr/src/app
+  brevly_server_db:
+    container_name: brevly_server_db
+    image: postgres:16-alpine
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - ./docker:/docker-entrypoint-initdb.d
+      - ./.ignore/postgres/:/var/lib/postgresql/data/
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
